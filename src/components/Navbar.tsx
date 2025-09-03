@@ -4,8 +4,8 @@ function Navbar() {
       <div className="text-xl">Blink</div>
       <div className="flex gap-6">
         <a href="#" className="hover:text-black transition">Home</a>
-        <a href="#" className="hover:text-black transition">About</a>
-        <a href="#" className="hover:text-black transition">Contact</a>
+        <a href="#" className="hover:text-black transition">Projects</a>
+        <a href="#" className="hover:text-black transition">Resume</a>
       </div>
     </nav>
   );

@@ -54,8 +54,10 @@ const BlinkOverlay: React.FC = () => {
     };
   }, []);
 
-  // Calculate opacity for inner eye elements during blink
-  const innerEyeOpacity = blinking ? 0 : 1;
+  // Shared transition style for all eye elements
+  const eyeTransition = {
+    transition: 'all 0.2s ease-in-out'
+  };
 
   return (
     <>
@@ -69,59 +71,60 @@ const BlinkOverlay: React.FC = () => {
         {/* Eye shape - condenses during blink */}
         <path
           d={blinking 
-            ? "M 5 30 Q 50 25 95 30 Q 50 35 5 30 Z"  // Condensed during blink
+            ? "M 5 30 Q 50 30 95 30 Q 50 30 5 30 Z"  // Fully closed - straight line
             : "M 5 30 Q 50 2 95 30 Q 50 58 5 30 Z"   // Normal open eye
           }
           fill="#fff"
           stroke="#000"
           strokeWidth={2}
-          style={{
-            transition: 'd 0.2s ease-in-out'
-          }}
+          style={eyeTransition}
         />
         
-        {/* Iris - stays centered, fades during blink */}
-        <circle 
+        {/* Iris - condenses vertically and fades during blink */}
+        <ellipse 
           cx={50} 
           cy={30} 
-          r={12} 
+          rx={12} 
+          ry={blinking ? 0 : 12}  // Fully condense during blink
           fill="#fff" 
           stroke="#000" 
           strokeWidth="1"
           style={{
-            opacity: innerEyeOpacity,
-            transition: 'opacity 0.2s ease-in-out'
+            ...eyeTransition,
+            opacity: blinking ? 0 : 1
           }}
         />
         
-        {/* Pupil - stays centered, fades during blink */}
-        <circle 
+        {/* Pupil - condenses vertically and fades during blink */}
+        <ellipse 
           cx={50} 
           cy={30} 
-          r={5.5} 
+          rx={5.5} 
+          ry={blinking ? 0 : 5.5}  // Fully condense during blink
           fill="#000" 
           style={{
-            opacity: innerEyeOpacity,
-            transition: 'opacity 0.2s ease-in-out'
+            ...eyeTransition,
+            opacity: blinking ? 0 : 1
           }}
         />
         
-        {/* Light reflection - moves around edge of pupil, fades during blink */}
-        <circle 
+        {/* Light reflection - moves around edge of pupil, condenses and fades during blink */}
+        <ellipse 
           cx={mousePosition.x} 
           cy={mousePosition.y} 
-          r={2} 
+          rx={2} 
+          ry={blinking ? 0 : 2}  // Fully condense during blink
           fill="#fff" 
           style={{
-            opacity: innerEyeOpacity * 0.9,
-            transition: 'opacity 0.2s ease-in-out'
+            ...eyeTransition,
+            opacity: blinking ? 0 : 0.9
           }}
         />
       </svg>
 
       {/* Fullscreen black overlay */}
       <div
-        className={`fixed inset-0 bg-black transition-opacity duration-1000 pointer-events-none z-50 ${
+        className={`fixed inset-0 bg-black transition-opacity duration-500 pointer-events-none z-50 ${
           visible ? "opacity-100" : "opacity-0"
         }`}
       />
