@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from "react";
 
 const BlinkOverlay: React.FC = () => {
@@ -6,31 +8,24 @@ const BlinkOverlay: React.FC = () => {
   const [mousePosition, setMousePosition] = useState({ x: 54, y: 26 });
 
   const handleClick = () => {
-    // Start blink animation
     setBlinking(true);
-    // Show overlay
     setVisible(true);
     
-    // Stop blink after 200ms
     setTimeout(() => setBlinking(false), 200);
-    // Hide overlay after 1000ms (1 second)
     setTimeout(() => setVisible(false), 1000);
   };
 
   const handleMouseMove = (event: MouseEvent) => {
     const eyeCenterX = 50;
     const eyeCenterY = 30;
-    const reflectionRadius = 4; // Distance from pupil center to edge
+    const reflectionRadius = 4;
     
-    // Get mouse position relative to the viewport
     const mouseX = event.clientX;
     const mouseY = event.clientY;
     
-    // Calculate direction from center of screen to mouse
     const deltaX = (mouseX - window.innerWidth / 2) / (window.innerWidth / 2);
     const deltaY = (mouseY - window.innerHeight / 2) / (window.innerHeight / 2);
     
-    // Normalize and position the reflection around the edge of the pupil
     const angle = Math.atan2(deltaY, deltaX);
     const reflectionX = eyeCenterX + Math.cos(angle) * reflectionRadius;
     const reflectionY = eyeCenterY + Math.sin(angle) * reflectionRadius;
@@ -42,37 +37,31 @@ const BlinkOverlay: React.FC = () => {
   };
 
   useEffect(() => {
-    // Add click event listener to the entire document
     document.addEventListener('click', handleClick);
-    // Add mouse move listener for eye tracking
     document.addEventListener('mousemove', handleMouseMove);
 
-    // Cleanup event listeners on component unmount
     return () => {
       document.removeEventListener('click', handleClick);
       document.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
-  // Shared transition style for all eye elements
   const eyeTransition = {
     transition: 'all 0.2s ease-in-out'
   };
 
   return (
     <>
-      {/* Eye component with mouse tracking and blinking */}
       <svg
         width={200}
         height={120}
         viewBox="0 0 100 60"
         className="z-10"
       >        
-        {/* Eye shape - condenses during blink */}
         <path
           d={blinking 
-            ? "M 5 30 Q 50 30 95 30 Q 50 30 5 30 Z"  // Fully closed - straight line
-            : "M 5 30 Q 50 2 95 30 Q 50 58 5 30 Z"   // Normal open eye
+            ? "M 5 30 Q 50 30 95 30 Q 50 30 5 30 Z"
+            : "M 5 30 Q 50 2 95 30 Q 50 58 5 30 Z"
           }
           fill="#fff"
           stroke="#000"
@@ -80,12 +69,11 @@ const BlinkOverlay: React.FC = () => {
           style={eyeTransition}
         />
         
-        {/* Iris - condenses vertically and fades during blink */}
         <ellipse 
           cx={50} 
           cy={30} 
           rx={12} 
-          ry={blinking ? 0 : 12}  // Fully condense during blink
+          ry={blinking ? 0 : 12}
           fill="#fff" 
           stroke="#000" 
           strokeWidth="1"
@@ -95,12 +83,11 @@ const BlinkOverlay: React.FC = () => {
           }}
         />
         
-        {/* Pupil - condenses vertically and fades during blink */}
         <ellipse 
           cx={50} 
           cy={30} 
           rx={5.5} 
-          ry={blinking ? 0 : 5.5}  // Fully condense during blink
+          ry={blinking ? 0 : 5.5}
           fill="#000" 
           style={{
             ...eyeTransition,
@@ -108,12 +95,11 @@ const BlinkOverlay: React.FC = () => {
           }}
         />
         
-        {/* Light reflection - moves around edge of pupil, condenses and fades during blink */}
         <ellipse 
           cx={mousePosition.x} 
           cy={mousePosition.y} 
           rx={2} 
-          ry={blinking ? 0 : 2}  // Fully condense during blink
+          ry={blinking ? 0 : 2}
           fill="#fff" 
           style={{
             ...eyeTransition,
@@ -122,11 +108,22 @@ const BlinkOverlay: React.FC = () => {
         />
       </svg>
 
-      {/* Fullscreen black overlay */}
+      {/* Fullscreen black overlay with maximum z-index */}
       <div
-        className={`fixed inset-0 bg-black transition-opacity duration-500 pointer-events-none z-50 ${
+        className={`fixed inset-0 bg-black pointer-events-none transition-opacity duration-500 ${
           visible ? "opacity-100" : "opacity-0"
         }`}
+        style={{ 
+          zIndex: 2147483647,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: '#000000'
+        }}
       />
     </>
   );
