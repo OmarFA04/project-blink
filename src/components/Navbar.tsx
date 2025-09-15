@@ -7,7 +7,7 @@ function Navbar() {
         <Link to="/">Blink</Link>
       </div>
       <div className="flex gap-6">
-        <Link to="/" className="hover:text-black transition">Home</Link>
+        <Link to="/homepage" className="hover:text-black transition">Home</Link>
         <Link to="/projects" className="hover:text-black transition">Projects</Link>
         <Link to="/resume" className="hover:text-black transition">Resume</Link>
       </div>
